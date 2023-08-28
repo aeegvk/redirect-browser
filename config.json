@@ -1,0 +1,7 @@
+{
+    "browser_mapping": {
+        "google.com": "google-chrome",
+        "example.com": "firefox",
+        "opera.com": "opera"
+    }
+}
