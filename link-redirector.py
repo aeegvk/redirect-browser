@@ -9,7 +9,7 @@ def load_config(filename):
     with open(filename, "r") as config_file:
         return json.load(config_file)
 
-config = load_config("config.json")
+config = load_config("/home/jrocas/apps/redirect-browser/config.json")
 
 browser_mapping = config["browser_mapping"]
 
