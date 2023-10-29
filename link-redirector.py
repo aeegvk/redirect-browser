@@ -1,6 +1,9 @@
+#! /usr/bin/env python3
+
 import os
 import json
-import webbrowser
+import subprocess
+from tldextract import extract
 
 def load_config(filename):
     with open(filename, "r") as config_file:
@@ -23,27 +26,24 @@ def register_protocol_handler(protocol, app_name):
 
 
 def open_link(link):
-    parts = link.split("://")
-    if len(parts) != 2:
-        print("Invalid link format")
-        return
-    
-    domain = parts[1]
-    browser_cmd = browser_mapping.get(domain, "xdg-open")
-    
+    extracted_domain = extract(link)
+    domain = extracted_domain.registered_domain
+    browser_cmd = browser_mapping.get(domain, "firefox")
+    cmd = [browser_cmd, link]
+
     try:
-        webbrowser.get(browser_cmd).open(link)
-    except webbrowser.Error:
+        status = subprocess.check_call(cmd)
+    except subprocess.CalledProcessError:
         print(f"Error opening link with {browser_cmd}")
         try:
-            webbrowser.open(link)  # Try system default browser
-        except webbrowser.Error:
+            status = subprocess.check_call(['firefox', link])  # Try system default browser
+        except subprocess.CalledProcessError:
             print("Error opening link with system default browser")
 
 if __name__ == "__main__":
     if len(os.sys.argv) != 2:
         print("Usage: python link_redirector.py <url>")
         os.sys.exit(1)
-    
+
     link = os.sys.argv[1]
     open_link(link)
